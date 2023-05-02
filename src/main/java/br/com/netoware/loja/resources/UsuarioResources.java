@@ -15,10 +15,15 @@ import br.com.netoware.loja.domain.Endereco;
 import br.com.netoware.loja.domain.Usuario;
 import br.com.netoware.loja.repository.EnderecoRepository;
 import br.com.netoware.loja.repository.UsuarioRepository;
+import br.com.netoware.loja.services.UsuarioService;
+import br.com.netoware.loja.services.exceptions.UsuarioNaoEncontradoException;
 
 @RestController
 @RequestMapping(value="/usuarios")
 public class UsuarioResources {
+	
+	@Autowired
+	private UsuarioService usuarioService;	
 	
 	@Autowired
 	private UsuarioRepository usuarioRepository;
@@ -26,24 +31,19 @@ public class UsuarioResources {
 	@Autowired
 	private EnderecoRepository enderecoRepository;
 	
+	
 	@RequestMapping(method=RequestMethod.GET)
 	public List<Usuario> obterTodosUsuarios() {
 		
-		List<Usuario> usuarios = usuarioRepository.findAll();
-			
-		return usuarios;
+		return usuarioService.obterTodosUsuarios();
 	}
 	
 	@RequestMapping(value = "/{id}", method=RequestMethod.GET)
-	public ResponseEntity<?> obterUsuario(@PathVariable("id") Long id) {
+	public ResponseEntity<Usuario> obterUsuario(@PathVariable("id") Long id) {
 		
-		Usuario u = usuarioRepository.findById(id).orElse(null);
-		
-		if (u == null) {
-			return ResponseEntity.notFound().build();
-		} 
-		
-		return ResponseEntity.status(HttpStatus.OK).body(u);
+		Usuario usuario = usuarioService.obterUsuario(id);	
+		 
+		return ResponseEntity.status(HttpStatus.OK).body(usuario);
 		
 	}
 	
@@ -61,11 +61,11 @@ public class UsuarioResources {
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT)
-	public String atualizar(@RequestBody Usuario usuario ) {
+	public ResponseEntity<?> atualizar(@RequestBody Usuario usuario ) {
 		
 		usuarioRepository.save(usuario);
 		
-		return "Atualizado com sucesso!";
+		return ResponseEntity.noContent().build();
 	}
 	
 	
@@ -82,5 +82,5 @@ public class UsuarioResources {
 		
 		return "Usuario cadastrado com sucesso";
 	}
-
+	
 }

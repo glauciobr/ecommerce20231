@@ -20,6 +20,7 @@ public class Usuario {
 	private Long id;
 	private String nome;
 	private String email;
+	private boolean isInativo;
 	
 	@JsonInclude(Include.NON_NULL)
 	@JsonFormat(pattern = "dd/MM/yyyy")
@@ -59,5 +60,12 @@ public class Usuario {
 	public void setDataNascimento(Date dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
+	public boolean isInativo() {
+		return isInativo;
+	}
+	public void setInativo(boolean isInativo) {
+		this.isInativo = isInativo;
+	}
+	
 	
 }
